@@ -87,29 +87,32 @@ double solution(double accuracy,double low_lim,double up_lim, Vec variables, dou
       c_pos = variables[1];
     }
   }
-  cout << abs(c_pos-c_neg) <<"\n";
   return (c_pos+c_neg)/2;
 }
 
 
 int main(int argc, char const *argv[]) {
   Vec variables(2);
+  Vec answers;
   variables[0]=0;//initial conditions
-  double a=0.09, b=0.1, t_f=20, t = 0,c_max = 40, c = -40, z;
+  double a=0.09, b=0.1, t_f=20, t = 0,c_max = 40, c = -40, z, z_p = 1;
   int n = 2000, n2 = 1000;//number of iterations
   double h = (t_f-t)/n, h2 = (c_max-c)/n2;//step size
   for (int i=0; i<n2; i++) { //run the runge kutta algoithm n times
     variables[1] = c;
     z = zeros(variables, t, h, n, a, b);
-    cout << c << ' ' << z << '\n';
+    if (std::signbit(z) != std::signbit(z_p) && i!=0) {
+      answers.push_back(c);
+    }
     c += h2;
+    z_p = z;
   }
-  /**
   double acc = 0.0000000001;
-  double sol = solution(acc,1.94,1.95,variables, t, h, n, a, b);
-  variables[1] = sol;
-  cout.precision(10);
-  cout << "v(0) of " << sol << " gives x(20) of " << zeros(variables, t, h, n, a, b) -1 << "\n";
-  **/
+  for(size_t i=0; i<answers.size(); i++) {
+    double sol = solution(acc,answers[i]-h2,answers[i],variables, t, h, n, a, b);
+    variables[1] = sol;
+    cout.precision(6);//rounds all outputted numbers to 6 significant figures
+    cout << "v(0) of " << sol << " gives x(20) of " << zeros(variables, t, h, n, a, b) -1 << "\n";
+  }
   return 0;
 }

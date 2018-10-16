@@ -57,8 +57,8 @@ Vec f(const std::vector<Planet>& p, int i, int d){
     a[k] = 0;
   }
   int n = p.size();
-  double dist_squared = 0;
   for(int j = 0; j<n; j++){
+    double dist_squared = 0;
     if(j != i) {
       for(int k = 0; k<d; k++){
         dist_squared += (p[i].x[k]-p[j].x[k])*(p[i].x[k]-p[j].x[k]);
